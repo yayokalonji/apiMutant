@@ -1,6 +1,6 @@
-package com.mutant.xmen.router;
+package com.mutant.xmen.routers;
 
-import com.mutant.xmen.handler.MutantHandler;
+import com.mutant.xmen.handlers.MutantHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;

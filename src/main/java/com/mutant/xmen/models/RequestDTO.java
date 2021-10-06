@@ -1,4 +1,4 @@
-package com.mutant.xmen.model;
+package com.mutant.xmen.models;
 
 import lombok.Data;
 
