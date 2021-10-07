@@ -1,13 +1,31 @@
+buildscript {
+	repositories {
+		mavenCentral()
+	}
+	dependencies {
+		//Use Spring Boot Gradle Plugin
+		classpath 'org.springframework.boot:spring-boot-gradle-plugin:2.5.5'
+		//Use Google App Engine Gradle plugin
+		classpath 'com.google.cloud.tools:appengine-gradle-plugin:2.4.2'
+		classpath 'org.akhikhl.gretty:gretty:+'
+
+	}
+}
+
 plugins {
 	id 'org.springframework.boot' version '2.5.5'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 	id 'java'
-	id 'war'
 }
+
+//Introduced App Engine plugin
+apply plugin: 'com.google.cloud.tools.appengine'
+apply plugin: 'org.akhikhl.gretty'
 
 group = 'com.mutant'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
+targetCompatibility = '11'
 
 configurations {
 	compileOnly {
@@ -27,8 +45,28 @@ dependencies {
 	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor:2.5.5'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test:2.5.5'
 	testImplementation 'io.projectreactor:reactor-test:3.4.10'
+	implementation 'com.google.appengine:appengine-api-1.0-sdk:1.9.91'
 }
+
 
 test {
 	useJUnitPlatform()
 }
+
+appengine {
+	//Deployment settings
+	// GCLOUD_If you specify CONFIG
+	//The project information set in gcloud config is set
+	deploy {
+		//Deploy to Google Cloud Project ID
+		projectId = "mutant-app-328315"
+		//Web app version reflected by deployment
+		//If not specified, a new one will be generated
+		version = "1"
+	}
+}
+
+gretty {
+	servletContainer = 'jetty9'  // What App Engine Flexible uses
+}
+
