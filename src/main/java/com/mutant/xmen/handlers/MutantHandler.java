@@ -10,6 +10,7 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -23,7 +24,7 @@ public class MutantHandler {
     public Mono<ServerResponse> mutant(ServerRequest request) {
         Mono<RequestDTO> requestDTOs = request.bodyToMono(RequestDTO.class);
         return requestDTOs.flatMap(p -> {
-            if (!this.validate(p)) {
+            if (this.validate(p)) {
                 return ServerResponse.badRequest().contentType(MediaType.APPLICATION_JSON).bodyValue("Only the letters A, C, G and T");
             }
             return mutantService.isMutant(p) ? ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).bodyValue(true) :
@@ -32,10 +33,14 @@ public class MutantHandler {
     }
 
     private boolean validate(RequestDTO requestDTO) {
-        return requestDTO.getDna().stream().anyMatch(x -> {
-            Pattern pattern = Pattern.compile("acgt", Pattern.CASE_INSENSITIVE);
+        AtomicBoolean result = new AtomicBoolean(false);
+        requestDTO.getDna().forEach(x -> {
+            Pattern pattern = Pattern.compile("[acgt]+", Pattern.CASE_INSENSITIVE);
             Matcher matcher = pattern.matcher(x);
-            return matcher.find();
+            if (!matcher.matches()) {
+                result.set(true);
+            }
         });
+        return result.get();
     }
 }
