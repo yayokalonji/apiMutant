@@ -9,5 +9,4 @@ public class XMenApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(XMenApplication.class, args);
 	}
-
 }
