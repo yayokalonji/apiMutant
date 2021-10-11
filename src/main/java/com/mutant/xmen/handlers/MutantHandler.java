@@ -27,6 +27,9 @@ public class MutantHandler {
             if (this.validate(p)) {
                 return ServerResponse.badRequest().contentType(MediaType.APPLICATION_JSON).bodyValue("Only the letters A, C, G and T");
             }
+            if (this.validateLength(p)) {
+                return ServerResponse.badRequest().contentType(MediaType.APPLICATION_JSON).bodyValue("The size is not supported");
+            }
             return mutantService.isMutant(p) ? ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).bodyValue(true) :
                     ServerResponse.status(HttpStatus.FORBIDDEN).contentType(MediaType.APPLICATION_JSON).bodyValue(false);
         });
@@ -38,6 +41,16 @@ public class MutantHandler {
             Pattern pattern = Pattern.compile("[acgt]+", Pattern.CASE_INSENSITIVE);
             Matcher matcher = pattern.matcher(x);
             if (!matcher.matches()) {
+                result.set(true);
+            }
+        });
+        return result.get();
+    }
+
+    private boolean validateLength(RequestDTO requestDTO) {
+        AtomicBoolean result = new AtomicBoolean(false);
+        requestDTO.getDna().forEach(x -> {
+            if (requestDTO.getDna().size() != x.length()) {
                 result.set(true);
             }
         });
