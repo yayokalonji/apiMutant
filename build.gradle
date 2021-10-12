@@ -45,9 +45,8 @@ jacocoTestReport {
 	afterEvaluate {
 		classDirectories.setFrom(files(classDirectories.files.collect {
 			fileTree(dir: it, exclude: [
-					"com/baeldung/**/ExcludedPOJO.class",
-					"com/baeldung/**/*DTO.*",
-					"**/config/*"
+					"com/mutant/xmen/models/*.class",
+					"com/mutant/xmen/XMenApplication.class"
 			])
 		}))
 	}

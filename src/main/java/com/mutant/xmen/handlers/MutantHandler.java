@@ -1,6 +1,8 @@
 package com.mutant.xmen.handlers;
 
+import com.mutant.xmen.models.Mutant;
 import com.mutant.xmen.models.RequestDTO;
+import com.mutant.xmen.repository.MutantRepository;
 import com.mutant.xmen.services.MutantService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,6 +22,9 @@ public class MutantHandler {
 
     @Autowired
     private MutantService mutantService;
+
+    @Autowired
+    private MutantRepository mutantRepository;
 
     public Mono<ServerResponse> mutant(ServerRequest request) {
         Mono<RequestDTO> requestDTOs = request.bodyToMono(RequestDTO.class);
@@ -55,5 +60,12 @@ public class MutantHandler {
             }
         });
         return result.get();
+    }
+
+    public Mono<ServerResponse> getAllMutants(ServerRequest request) {
+        return ServerResponse
+                .ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(mutantRepository.findAll(), Mutant.class);
     }
 }
