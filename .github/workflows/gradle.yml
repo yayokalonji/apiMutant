@@ -28,7 +28,7 @@ jobs:
           path: build/libs/x-men-0.0.1-SNAPSHOT.jar
           discard-paths: yes
       - name: Deploy to EB
-        uses: einregilson/beanstalk-deploy@v18
+        uses: einaregilsson/beanstalk-deploy@v18
         with:
           aws-access-key: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
