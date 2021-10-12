@@ -27,9 +27,9 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/download-artifact@v2
         with:
-          name: Upload Jar
+          name: Download Jar
           path: build/libs/x-men-0.0.1-SNAPSHOT.jar
 
       - name: Configure AWS Credentials
