@@ -2,8 +2,8 @@ plugins {
 	id 'org.springframework.boot' version '2.5.5'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 	id 'java'
+	id 'jacoco'
 }
-
 
 group = 'com.mutant'
 version = '0.0.1-SNAPSHOT'
@@ -27,12 +27,45 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok:1.18.20'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools:2.5.5'
 	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor:2.5.5'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test:2.5.5'
-	testImplementation 'io.projectreactor:reactor-test:3.4.10'
+	testImplementation ('org.springframework.boot:spring-boot-starter-test:2.5.5') {
+		exclude group: 'org.junit.vintage', module: 'junit-ventage-engine'
+	}
 }
 
 
 test {
 	useJUnitPlatform()
+	finalizedBy jacocoTestReport
 }
+
+
+jacocoTestReport {
+	dependsOn test
+
+	afterEvaluate {
+		classDirectories.setFrom(files(classDirectories.files.collect {
+			fileTree(dir: it, exclude: [
+					"com/baeldung/**/ExcludedPOJO.class",
+					"com/baeldung/**/*DTO.*",
+					"**/config/*"
+			])
+		}))
+	}
+}
+
+jacocoTestCoverageVerification {
+	violationRules {
+		rule {
+			limit {
+				minimum = 0.8
+			}
+		}
+	}
+}
+
+jacoco {
+	toolVersion = "0.8.6"
+}
+
+check.dependsOn jacocoTestCoverageVerification
 
