@@ -36,5 +36,4 @@ jobs:
           application_name: X-Men
           environment_name: Xmen-env
           version_label: 5
-          deployment_package: build/libs/x-men-0.0.1-SNAPSHOT.jar
 
