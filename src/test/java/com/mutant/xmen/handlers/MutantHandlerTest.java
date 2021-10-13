@@ -6,7 +6,6 @@ import com.mutant.xmen.repository.MutantRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -18,7 +17,6 @@ import java.util.List;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@AutoConfigureWebTestClient(timeout = "36000")
 class MutantHandlerTest {
 
     RequestDTO requestBody;
@@ -93,11 +91,6 @@ class MutantHandlerTest {
         this.requestBody = new RequestDTO();
         this.stringList = new ArrayList<>();
         stringList.add("ATGCGA");
-        stringList.add("CAGTOC");
-        stringList.add("TTATGT");
-        stringList.add("AGATGG");
-        stringList.add("CCTC");
-        stringList.add("TCG");
         requestBody.setDna(stringList);
         webTestClient.post()
                 .uri("/mutant/")
@@ -147,7 +140,7 @@ class MutantHandlerTest {
         stringList.add("ATGCGA");
         stringList.add("CAGTGC");
         stringList.add("TTATGT");
-        stringList.add("AGAAGG");
+        stringList.add("AGAAAG");
         stringList.add("CCGCTA");
         stringList.add("TCACTG");
         requestBody.setDna(stringList);

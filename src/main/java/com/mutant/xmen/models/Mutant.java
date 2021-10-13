@@ -1,7 +1,8 @@
 package com.mutant.xmen.models;
 
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
-import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -11,9 +12,11 @@ import org.springframework.data.mongodb.core.mapping.Field;
 public class Mutant {
 
     @Id
-    private ObjectId id;
+    @JsonIgnore
+    private Object id;
     @Field("count_mutant_dna")
     private double countMutantDna;
     @Field("count_human_dna")
     private double countHumanDna;
+    private double ratio;
 }

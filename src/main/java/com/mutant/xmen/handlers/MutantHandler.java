@@ -10,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -29,13 +30,12 @@ public class MutantHandler {
     public Mono<ServerResponse> mutant(ServerRequest request) {
         Mono<RequestDTO> requestDTOs = request.bodyToMono(RequestDTO.class);
         return requestDTOs.flatMap(p -> {
-            if (this.validate(p)) {
-                return ServerResponse.badRequest().contentType(MediaType.APPLICATION_JSON).bodyValue("Only the letters A, C, G and T");
+            if (this.validate(p) || this.validateLength(p)) {
+                return ServerResponse.badRequest().contentType(MediaType.APPLICATION_JSON).bodyValue("Verify the information.........");
             }
-            if (this.validateLength(p)) {
-                return ServerResponse.badRequest().contentType(MediaType.APPLICATION_JSON).bodyValue("The size is not supported");
-            }
-            return mutantService.isMutant(p) ? ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).bodyValue(true) :
+            boolean isMutant = mutantService.isMutant(p);
+            this.save(isMutant);
+            return isMutant ? ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).bodyValue(true) :
                     ServerResponse.status(HttpStatus.FORBIDDEN).contentType(MediaType.APPLICATION_JSON).bodyValue(false);
         });
     }
@@ -66,6 +66,26 @@ public class MutantHandler {
         return ServerResponse
                 .ok()
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(mutantRepository.findAll(), Mutant.class);
+                .body(mutantRepository.findAll().flatMap(x -> {
+                    Mutant mutant = new Mutant();
+                    mutant.setCountHumanDna(x.getCountHumanDna());
+                    mutant.setCountMutantDna(x.getCountMutantDna());
+                    mutant.setRatio(x.getRatio());
+                    return Flux.just(mutant);
+                }).last(), Mutant.class);
+    }
+
+    private void save(boolean isMutant) {
+        Flux<Mutant> mutantFlux = mutantRepository.findAll();
+        mutantFlux.flatMap(b -> {
+            if (isMutant) {
+                b.setCountMutantDna(b.getCountMutantDna() + 1);
+            } else {
+                b.setCountHumanDna(b.getCountHumanDna() + 1);
+            }
+            b.setRatio(b.getCountMutantDna() / (b.getCountHumanDna() == 0 ? 1 : b.getCountHumanDna()));
+            mutantRepository.save(b).subscribe();
+            return Flux.just(b);
+        }).subscribe();
     }
 }

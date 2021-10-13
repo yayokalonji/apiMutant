@@ -23,8 +23,8 @@ repositories {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-webflux:2.5.5'
 	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-mongodb-reactive', version: '2.5.5'
-	compileOnly 'org.projectlombok:lombok:1.18.20'
-	annotationProcessor 'org.projectlombok:lombok:1.18.20'
+	compileOnly 'org.projectlombok:lombok:1.18.22'
+	annotationProcessor 'org.projectlombok:lombok:1.18.22'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools:2.5.5'
 	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor:2.5.5'
 	testImplementation ('org.springframework.boot:spring-boot-starter-test:2.5.5') {
@@ -45,8 +45,8 @@ jacocoTestReport {
 	afterEvaluate {
 		classDirectories.setFrom(files(classDirectories.files.collect {
 			fileTree(dir: it, exclude: [
-					"com/mutant/xmen/models/*.class",
-					"com/mutant/xmen/XMenApplication.class"
+					'com/mutant/xmen/models/*.class',
+					"com/mutant/xmen/XMenApplication.class",
 			])
 		}))
 	}
@@ -55,9 +55,16 @@ jacocoTestReport {
 jacocoTestCoverageVerification {
 	violationRules {
 		rule {
+			element = 'CLASS'
 			limit {
+				counter = 'LINE'
+				value = 'COVEREDRATIO'
 				minimum = 0.8
 			}
+			excludes = [
+					'com.mutant.xmen.models.*',
+					'com.mutant.xmen.XMenApplication',
+			]
 		}
 	}
 }
@@ -65,6 +72,5 @@ jacocoTestCoverageVerification {
 jacoco {
 	toolVersion = "0.8.6"
 }
-
 check.dependsOn jacocoTestCoverageVerification
 
