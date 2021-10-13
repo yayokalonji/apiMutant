@@ -35,5 +35,6 @@ jobs:
           region: ${{ secrets.AWS_REGION }}
           application_name: X-Men
           environment_name: Xmen-env
-          version_label: 5
+          version_label: ${{ secrets.VERSION }}
+          deployment_package: build/libs/x-men-0.0.1-SNAPSHOT.jar
 
