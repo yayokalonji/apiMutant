@@ -37,4 +37,5 @@ jobs:
           environment_name: Xmen-env
           version_label: ${{ secrets.VERSION }}
           deployment_package: build/libs/x-men-0.0.1-SNAPSHOT.jar
+          use_existing_version_if_available: true
 
